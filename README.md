@@ -28,7 +28,7 @@ This script will download all your Snapchat memories in bulk, **including the ti
 
 ### Optional Arguments
 ```
-usage: main.py [-h] [-o OUTPUT] [-c CONCURRENT] [--no-exif] [--no-skip-existing] json_file
+usage: main.py [-h] [-o OUTPUT] [-c CONCURRENT] [--no-exif] [--no-skip-existing] [--partial] json_file
 
 Download Snapchat memories from data export
 
@@ -42,7 +42,12 @@ options:
 						Max concurrent downloads
 --no-exif             Disable EXIF metadata
 --no-skip-existing    Re-download existing files
+--partial             Import valid records and skip malformed ones;
+                      by default the run aborts (before any network
+                      request) if a record fails preflight
 ```
+
+Records are validated offline before the first download request. If any record is malformed (missing field, unexpected `Date` format, unparsable `Location` coordinates, ...), the default strict run prints the source index, field, reason and a non-sensitive fingerprint for each bad record, sends 0 requests and creates no output directory. Re-run with `--partial` to download the valid records instead; the final summary accounts for every source record (`total = imported + rejected`).
 
 ## Trouble Shooting
 1. Make sure you get a fresh zip-file before running the script, links will expire over time
